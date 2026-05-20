@@ -1,0 +1,43 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: newsflow_mysql
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: news_db
+
+    ports:
+      - "3308:3306"
+
+  redis:
+    image: redis:latest
+    container_name: newsflow_redis
+
+    ports:
+      - "6379:6379"
+
+  airflow:
+    image: apache/airflow:2.8.1
+    container_name: newsflow_airflow
+
+    restart: always
+
+    depends_on:
+      - mysql
+      - redis
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./data:/opt/airflow/data
+
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+
+    command: standalone
