@@ -1,4 +1,6 @@
-#!/home/viveena/Code/Viveena/Twitter/venv/bin/python3.12
+#!/bin/sh
+'''exec' "/home/viveena/Code/Viveena/NewsFlow ETL Pipeline/venv/bin/python3" "$0" "$@"
+' '''
 # -*- coding: utf-8 -*-
 import re
 import sys

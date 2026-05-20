@@ -27,12 +27,18 @@ def extract_news():
 
     df = pd.DataFrame(news_list)
 
-    os.makedirs("/opt/airflow/data", exist_ok=True)
+    DATA_PATH = "data/news_data.csv"
 
-    df.to_csv("/opt/airflow/data/news_data.csv", index=False)
+    if os.path.exists("/opt/airflow"):
+        DATA_PATH = "/opt/airflow/data/news_data.csv"
+
+    os.makedirs(os.path.dirname(DATA_PATH), exist_ok=True)
+
+    df.to_csv(DATA_PATH, index=False)
 
     print("News Extracted Successfully")
     print(df.head())
+
 
 
 if __name__ == "__main__":

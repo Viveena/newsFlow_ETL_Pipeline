@@ -9,15 +9,12 @@ MYSQL_DB = "news_db"
 
 def load_to_mysql():
 
-    # Read transformed CSV
-    df = pd.read_csv("/opt/airflow/data/news_transformed.csv")
+    df = pd.read_csv("data/news_transformed.csv")
 
-    # MySQL connection
     engine = create_engine(
         f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB}"
     )
 
-    # Insert data into table
     df.to_sql(
         name="news_articles",
         con=engine,

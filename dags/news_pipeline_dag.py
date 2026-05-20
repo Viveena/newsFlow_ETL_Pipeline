@@ -1,26 +1,31 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from datetime import datetime
+from datetime import datetime, timedelta
 import sys
 
 # Access scripts folder
 sys.path.append('/opt/airflow/scripts')
 
-from extract import *
-from transform import *
-from load import *
+from extract import extract_news
+from transform import transform_data
+from load import load_to_mysql
 
 default_args = {
     "owner": "viveena",
-    "start_date": datetime(2025, 1, 1)
+    "start_date": datetime(2025, 1, 1),
+    "retries": 2,
+    "retry_delay": timedelta(minutes=2)
 }
 
 with DAG(
+
     dag_id="news_etl_pipeline",
+
+    description="Automated News ETL Pipeline using Airflow",
 
     default_args=default_args,
 
-    schedule_interval="@daily",
+    schedule="@daily",
 
     catchup=False
 

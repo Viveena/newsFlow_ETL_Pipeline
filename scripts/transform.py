@@ -2,7 +2,7 @@ import pandas as pd
 
 def transform_data():
 
-    df = pd.read_csv("/opt/airflow/data/news_data.csv")
+    df = pd.read_csv("data/news_data.csv")
 
     print("Original Data")
     print(df.head())
@@ -23,7 +23,7 @@ def transform_data():
     df["publishedAt"] = pd.to_datetime(df["publishedAt"])
 
     # Save transformed data
-    df.to_csv("/opt/airflow/data/news_transformed.csv", index=False)
+    df.to_csv("data/news_transformed.csv", index=False)
 
     print("\nTransformation Complete")
     print(df.head())

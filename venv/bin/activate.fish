@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /home/viveena/Code/Viveena/Twitter/venv
+set -gx VIRTUAL_ENV '/home/viveena/Code/Viveena/NewsFlow ETL Pipeline/venv'
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH
