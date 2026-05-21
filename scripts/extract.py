@@ -1,9 +1,21 @@
-
 import requests
 import pandas as pd
+import redis
+import json
 import os
 
 API_KEY = "4f226ed902994f6f8a2b5172159f735d"
+
+REDIS_HOST = "localhost"
+if os.path.exists("/opt/airflow"):
+    REDIS_HOST = "newsflow_redis"
+
+redis_client = redis.Redis(
+    host=REDIS_HOST,
+    port=6379,
+    decode_responses=True
+)
+
 
 def extract_news():
 
@@ -35,6 +47,14 @@ def extract_news():
     os.makedirs(os.path.dirname(DATA_PATH), exist_ok=True)
 
     df.to_csv(DATA_PATH, index=False)
+
+    redis_client.set(
+    "latest_news",
+    json.dumps(news_list)
+    )
+
+    print("Stored news in Redis")
+
 
     print("News Extracted Successfully")
     print(df.head())

@@ -1,8 +1,33 @@
 import pandas as pd
+import redis
+import json
+import os
+
+REDIS_HOST = "localhost"
+if os.path.exists("/opt/airflow"):
+    REDIS_HOST = "newsflow_redis"
+
+redis_client = redis.Redis(
+    host=REDIS_HOST,
+    port=6379,
+    decode_responses=True
+)
 
 def transform_data():
 
-    df = pd.read_csv("data/news_data.csv")
+    cached_news = redis_client.get("latest_news")
+
+    if cached_news:
+        print("Reading data from Redis")
+
+        news_data = json.loads(cached_news)
+
+        df = pd.DataFrame(news_data)
+
+    else:
+        print("Redis cache miss. Reading CSV")
+
+        df = pd.read_csv("/opt/airflow/data/news_data.csv")
 
     print("Original Data")
     print(df.head())
@@ -23,7 +48,18 @@ def transform_data():
     df["publishedAt"] = pd.to_datetime(df["publishedAt"])
 
     # Save transformed data
-    df.to_csv("data/news_transformed.csv", index=False)
+
+    output_path = "data/news_transformed.csv"
+
+    if os.path.exists("/opt/airflow"):
+        output_path = "/opt/airflow/data/news_transformed.csv"
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    df.to_csv(output_path, index=False)
+
+
+    print("Stored transformed data in Redis")
 
     print("\nTransformation Complete")
     print(df.head())
